@@ -108,7 +108,8 @@ public final class Main {
   private static NetworkTableEntry centerXEntry;
   private static NetworkTableEntry driveCorrectionEntry;
   private static NetworkTableEntry numberImagesEntry;
-  private static NetworkTableEntry imageWidthEntry;
+  private static NetworkTableEntry rectWidthEntry;
+  private static NetworkTableEntry rectHeightEntry;
   private static NetworkTableEntry threadCounter1Entry;
   private static NetworkTableEntry numberEntry;
   private static int imageWidth;
@@ -359,7 +360,8 @@ public final class Main {
       centerXEntry = targetData.getEntry("centerX");
       driveCorrectionEntry = targetData.getEntry("drCorr");
       numberImagesEntry = targetData.getEntry("numberImages");
-      imageWidthEntry = targetData.getEntry("imageWidth");
+      rectWidthEntry = targetData.getEntry("rectWidth");
+      rectHeightEntry = targetData.getEntry("rectHeight");
       numberEntry = targetData.getEntry("value");
       threadCounter1Entry = targetData.getEntry("tgtTChnt");
       numberEntry.setDouble(99);
@@ -376,37 +378,43 @@ public final class Main {
     }
 
     // start image processing on camera 0 if present
-    // if (cameras.size() >= 1) {
-    // visionThread = new VisionThread(cameras.get(0),
-    // / new MyPipeline(), pipeline -> {
-    // // do something with pipeline results
-    // });
-    // //something like this for GRIP:
+
     if (cameras.size() >= 1) {
       visionThread = new VisionThread(cameras.get(0), new GripPipeline(), pipeline -> {
         imageWidth = cameras.get(0).getVideoMode().width;
         imageHeight = cameras.get(0).getVideoMode().height;
         loopCtr++;
-
-        if (pipeline.filterContoursOutput().size() < 1) {
+        double maxSize = -1;
+        int maxSizeIndex = -1;
+        numberImages = pipeline.convexHullsOutput.size();
+        if (numberImages < 1) {
           numberImages = 0;
           centerX = 0;
           driveCorrection = 0;
+          x = 0;
+          y = 0;
+          rectHeight = 0;
+          rectWidth = 0;
         } else {
-
-          numberImages = pipeline.filterContoursOutput().size();
-          Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
-
           synchronized (imgLock) {
-            rectHeight = r.height;
-            rectWidth = r.width;
-            x = r.x;
-            y = r.y;
-            centerX = r.x + (r.width / 2);
-            driveCorrection = centerX - (imageWidth / 2);
+            for (int i = 0; i < pipeline.convexHullsOutput.size(); i++) {
+              if (Imgproc.contourArea(pipeline.convexHullsOutput.get(i)) > maxSize) {
+                maxSize = Imgproc.contourArea(pipeline.convexHullsOutput.get(i));
+                maxSizeIndex = i;
+              }
+
+              Rect r = Imgproc.boundingRect(pipeline.convexHullsOutput().get(maxSizeIndex));
+              rectHeight = r.height;
+              rectWidth = r.width;
+              x = r.x;
+              y = r.y;
+              centerX = r.x + (r.width / 2);
+              driveCorrection = centerX - (imageWidth / 2);
+            }
           }
         }
-        imageWidthEntry.setDouble(imageWidth);
+        rectWidthEntry.setDouble(rectWidth);
+        rectHeightEntry.setDouble(rectHeight);
         driveCorrectionEntry.setDouble(driveCorrection);
         centerXEntry.setDouble(centerX);
         numberImagesEntry.setDouble(numberImages);
