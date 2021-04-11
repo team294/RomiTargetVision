@@ -44,11 +44,13 @@ public class GripPipeline implements VisionPipeline {
 		double blurRadius = 0.0;
 		blur(blurInput, blurType, blurRadius, blurOutput);
 
-		// Step HSV_Threshold0:
+		// Step HSV_Threshold0:   
+				//Yellow ping pong  11,67  60,239  88,255  OK, but not great on wood floor
+				// Pink ping pong ball  157,192  135,229  132,255
 		Mat hsvThresholdInput = blurOutput;
-		double[] hsvThresholdHue = {39.496403803928295, 74.94880897600088};
-		double[] hsvThresholdSaturation = {91.72662089196896, 255.0};
-		double[] hsvThresholdValue = {81.63669370918822, 247.16723881483892};
+		double[] hsvThresholdHue = {93,121};	// 39.5,74.949
+		double[] hsvThresholdSaturation = {160,255};		//49,239  // 91.7266, 255
+		double[] hsvThresholdValue = {88, 255};	// 81.6367, 247.17
 		hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, hsvThresholdOutput);
 
 		// Step Find_Contours0:
