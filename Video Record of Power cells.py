@@ -27,16 +27,16 @@ while cap.isOpened():
 
 #  Reads the track Bar;  If it is not used it will default to PowerCell values
     l_h = cv2.getTrackbarPos("LH", "Tracking")  
-    if l_h == 0: l_h = 16
+    if l_h == 0: l_h = 23
     l_s = cv2.getTrackbarPos("LS", "Tracking")  
-    if l_s == 0: l_s = 114
+    if l_s == 0: l_s = 58
     l_v = cv2.getTrackbarPos("LV", "Tracking")  
-    if l_v == 0: l_v = 84
+    if l_v == 0: l_v = 130
     
     u_h = cv2.getTrackbarPos("UH", "Tracking")  
-    if u_h == 255 : u_h = 70
+    if u_h == 255 : u_h = 65
     u_s = cv2.getTrackbarPos("US", "Tracking")  
-    if u_s == 255 : u_s = 255
+    if u_s == 255 : u_s = 186
     u_v = cv2.getTrackbarPos("UV", "Tracking")  
     if u_v == 255 : u_v = 255    
 
@@ -72,4 +72,5 @@ cap.release()
 outVid.release
 
 # Parameters for yellow ball:   LH 16, LS 114, LV 84,  UH 70, US 255, UV 255
+# Parameters for tennis ball:   LH 23, LS 58, LV 130,  UH 65, US 186, UV 255
 # Parameters for blue ball:   LH 93, LS 160, LV 88,  UH 121, US 255, UV 255
