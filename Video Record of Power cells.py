@@ -44,7 +44,7 @@ while cap.isOpened():
     u_b = np.array([u_h,u_s,u_v])
 
     mask = cv2.inRange(hsv, l_b, u_b)
-   # maskBlur = cv2.GaussianBlur(mask, (5,5), 0)
+    maskBlur = cv2.GaussianBlur(mask, (25,25), 0)
 
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     #print(contours[0])
