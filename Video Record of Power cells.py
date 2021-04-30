@@ -60,7 +60,7 @@ while cap.isOpened():
     #cv2.imshow('frame', frame)
     #cv2.imshow('mask', mask)
     cv2.imshow('res', res)
-    outVid.write(frame)
+    #outVid.write(frame)
 
     key = cv2.waitKey(1)
     if key == 27:
